@@ -1,9 +1,7 @@
 package ofo.hive;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -12,28 +10,32 @@ import javax.ws.rs.core.MediaType;
  * @author marscheng
  * @create 2017-07-26 下午3:19
  */
-@Path("hello")
+@Path("set")
 public class Hello {
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String sayHello(){
-        return "Hello,I am text!";
-    }
-
-
-    @POST
-    @Produces(MediaType.TEXT_XML)
-    public String sayXMLHello() {
-        return "<?xml version=\"1.0\"?>" + "<hello> Hello,I am xml!" + "</hello>";
+    @Path("table")
+    public String sayXMLHello(@QueryParam("group_name") String group_name,
+                              @QueryParam("group_id") String group_id,
+                              @QueryParam("manager") String manager,
+                              @QueryParam("database") String database,
+                              @QueryParam("table") String table,
+                              @QueryParam("readonly") Boolean readonly,
+                              @QueryParam("text") String text) {
+        System.out.println(group_name + " " + group_id + " " + manager + " " + table + " " + database + " " + readonly.toString() + " " + text);
+        return readonly.toString();
     }
 
     @GET
-    @Produces(MediaType.TEXT_HTML)
-    public String sayHtmlHello() {
-        return "<html> " + "<title>" + "Hello Jersey" + "</title>"
-                + "<body><h1>" + "Hello,I am html!" + "</body></h1>" + "</html> ";
+    @Path("database")
+    public String sayXMLHello(@QueryParam("group_name") String group_name,
+                              @QueryParam("group_id") String group_id,
+                              @QueryParam("manager") String manager,
+                              @QueryParam("database") String database,
+                              @QueryParam("readonly") Boolean readonly,
+                              @QueryParam("text") String text) {
+        System.out.println(group_name + " " + group_id + " " + manager + " " + " " + database + " " + readonly.toString() + " " + text);
+        return readonly.toString();
     }
-
 
 }
