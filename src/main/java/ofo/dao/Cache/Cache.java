@@ -72,20 +72,15 @@ public class Cache {
         return state;
     }
 
-    /**
-     * @param id_value 传入application_id，查询这个id上一次检测有问题的时间
-     * @return 返回一系列标志位，得出这个任务是第一次报警
-     */
-    public ArrayList<String> select(String id_value) {
+
+    public UserEnity select(String user_name, String password) {
 
 //      传入任务id，查询这个id中上次报警的值
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        ArrayList<String> list = new ArrayList<>(2);
-
+        UserEnity userEnity=null;
         try (Connection conn = DbUtil.getConnection()) {
             sql = String.format(
-                    "select firstAlarm,is_alarm from job_info_check where id ='%s' order by elapsedTime desc limit 1",
-                    id_value);
+                    "select `group`,level,phone,email from user where user='%s' and password='%s'", user_name
+                    , password);
 
             try (Statement stat = conn.createStatement()) {
                 try (ResultSet set = stat.executeQuery(sql)) {
@@ -93,8 +88,12 @@ public class Cache {
                     while (set.next()) {
 
 //              返回一个列表，里面包含格式化好的时间和报警标志位
-                        list.add(df.format(set.getTimestamp("firstAlarm")));
-                        list.add(set.getString("is_alarm"));
+                        userEnity=new UserEnity(user_name,
+                                password,
+                                set.getString("group"),
+                                set.getString("level"),
+                                set.getInt("phone"),
+                                set.getString("email"));
                     }
                 }
                 stat.close();
@@ -102,8 +101,7 @@ public class Cache {
         } catch (Exception e) {
             Log.error("select firstAlarm info error: +" + e.getMessage(), e);
         }
-
-        return list;
+        return userEnity;
     }
 
     /**
